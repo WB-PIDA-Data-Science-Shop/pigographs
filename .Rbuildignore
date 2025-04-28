@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 Spielplatz
 ^data-raw$
+^LICENSE\.md$
+^renv$
+^renv\.lock$
