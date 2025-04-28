@@ -11,5 +11,35 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 LazyData: true
 Imports: 
+    countrycode,
+    rlang,
+    tidyr,
+    cowplot,
+    devtools,
+    dplyr,
+    extrafont,
+    forcats,
+    ggplot2,
+    ggrepel,
+    haven,
+    here,
+    janitor,
+    labelled,
+    openxlsx,
+    patchwork,
+    RColorBrewer,
+    readr,
+    readxl,
+    reshape2,
+    scales,
+    stringi,
+    stringr,
+    roxygen2,
+    tidyverse
+Suggests:
+    cowplot,
+    patchwork,
+    extrafont
 Depends: 
-    R (>= 2.10)
+    R (>= 2.10),
+    
