@@ -1,6 +1,7 @@
 ^pigographs\.Rproj$
 ^\.Rproj\.user$
 Spielplatz
+figures
 ^data-raw$
 ^LICENSE\.md$
 ^renv$

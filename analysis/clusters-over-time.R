@@ -90,9 +90,9 @@ hrm_diff |>
   mutate(country_name = reorder(country_name, ctf_distance)) |>
   generate_diff_plot()
 
-ggsave_facet(
-  here("figures","11-hrm-cluster-change.png")
-)
+# ggsave_facet(
+#   here("figures","11-hrm-cluster-change.png")
+# )
 
 # integrity cluster
 
@@ -111,7 +111,9 @@ integrity_diff <- compute_cluster_diff(year_subset,
 # Full by region
 integrity_diff |>
   mutate(country_name = reorder(country_name, ctf_distance)) |>
-  ggplot_region_change()
+  generate_diff_plot()
+
+
 
 
 
