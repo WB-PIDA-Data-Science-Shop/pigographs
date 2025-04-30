@@ -45,18 +45,18 @@ clusters <- c(
 )
 
 #Pivot long
-ctf_dyn_long <- ctf_dyn_clients %>%
+ctf_dyn_long <- ctf_dyn_clients |>
   pivot_longer(
     cols      = 8:last_col(),
     names_to  = "variable",
     values_to = "value"
-  ) %>%
-  left_join(db_variables, by = "variable") %>%
+  ) |>
+  left_join(db_variables, by = "variable") |>
   select(
     country_name, country_code, income_group,
     lending_category, region, year,
     variable, value, var_name, family_name
-  ) %>%
+  ) |>
   # filter on membership rather than ==:
   filter(family_name %in% clusters)
 
