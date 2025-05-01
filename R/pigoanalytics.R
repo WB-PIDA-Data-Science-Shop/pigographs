@@ -48,13 +48,6 @@ compute_regional_statistics <- function(data, dimension) {
       by = "region"
     ) |>
     mutate(
-      # region = recode(region,
-      #                 "Europe & Central Asia" = "ECA",
-      #                 "East Asia & Pacific" = "EAP",
-      #                 "Latin America & Caribbean" = "LAC",
-      #                 "Middle East & North Africa" = "MENA",
-      #                 "South Asia" = "SAR",
-      #                 "Sub-Saharan Africa" = "SSA"),
       country_code = countrycode(
         country_name,
         "country.name",

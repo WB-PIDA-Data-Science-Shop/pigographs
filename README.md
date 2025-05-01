@@ -6,24 +6,23 @@ This repository aims to reproduce the analysis presented in the Public Instituti
 
 ## Structure
 
-Initial structure
+
 
 ```         
 pigographs/
 ├── pigographs.Rproj           
 ├── data-raw/                  # Data in raw version (input)
-├── data/                      # Directory for data transformations 
+├── data/                      # Directory for data cleaning
 ├── R/                         # Directory for functions
 ├── analysis/                  # Directory with scripts
-├── figs/                      # PIGO report figures
+├── figs/                      # PIGO report figures (output)
 ├── DESCRIPTION                # Package metadata and dependencies
-├── NAMESPACE                  # Specifies exported functions and imported packages (libraries)
-├── spielplatz/                # Directory for producing data analysis
-    └── figs/                  # For exporting .png files
+├── NAMESPACE                  # Specifies exported functions and imported packages
+├── spielplatz/                # Directory for team collaboration
 ├── vignettes/                 # Directory for long-form documentation 
 ├── tests/                     # Directory for unit tests
 ├── README.Rmd                 # Global directory that reproduces the code 
-└── README.md                  # Pepo README file
+└── README.md                  # Repository README file
 ```
 
 ## Status: Ongoing construction
