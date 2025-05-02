@@ -22,13 +22,22 @@ lending_class <- read_csv(
 
 # Subsetting
 # Perform a left join to merge lending_class into ctf_static
-ctf_static_clients <- ctf_static %>%
+ctf_static_wide <- ctf_static %>%
   left_join(lending_class, by = "country_code") %>%  # Join based on country_code
   filter(country_code %in% lending_class$country_code) %>%   # Subset only matched countries
   relocate(income_group, lending_category, .after = country_code)
 
+write_csv(
+  ctf_static_wide,
+  here(
+    "data-raw",
+    "output",
+    "ctf_static_wide.csv.gz"
+  )
+)
+
 # Pivot longer and merge with db_variables
-static_ctf_clusters <- ctf_static_clients |>
+static_ctf_clusters <- ctf_static_wide |>
   pivot_longer(
     cols = 7:last_col(),
     names_to = "variable",
@@ -38,7 +47,7 @@ static_ctf_clusters <- ctf_static_clients |>
     db_variables |>
       group_by(variable)
   ) |>
-  select(1:9, -country_group) |>
+  select(1:9, -country_group)
 
 
 # Export dataframe

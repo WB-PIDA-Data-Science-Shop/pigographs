@@ -73,7 +73,48 @@ year_subset <- dynamic_ctf_clusters |>
 
 # clusters-visualizations -------------------------------------------------
 
-# HRMS cluster
+# FIGURE 9. Political cluster
+political_diff <- compute_cluster_diff(year_subset,
+                                       "Political Institutions",
+                                       2018,
+                                       2022) |>
+  distinct(country_name,
+           ctf_distance,
+           lending_category,
+           region,.keep_all = FALSE) |>
+  filter(!is.na(ctf_distance))
+
+# Plot
+political_diff |>
+  mutate(country_name = reorder(country_name, ctf_distance)) |>
+  generate_diff_plot()
+
+ggsave_facet(
+  here("figures","09-political-cluster-change.png")
+)
+
+# FIGURE 10. Social cluster
+social_diff <- compute_cluster_diff(year_subset,
+                                    "Social Institutions",
+                                    2018,
+                                    2022) |>
+  distinct(country_name,
+           ctf_distance,
+           lending_category,
+           region,.keep_all = FALSE) |>
+  filter(!is.na(ctf_distance))
+
+# Plot
+social_diff |>
+  mutate(country_name = reorder(country_name, ctf_distance)) |>
+  generate_diff_plot()
+
+ggsave_facet(
+  here("figures","10-social-cluster-change.png")
+)
+
+
+# FIGURE 11. HRMS cluster
 hrm_diff <- compute_cluster_diff(year_subset,
                                  "Public HRM Institutions",
                                  2018,
@@ -92,7 +133,7 @@ ggsave_facet(
   here("figures","11-hrm-cluster-change.png")
 )
 
-# integrity cluster
+# FIGURE 12. Integrity cluster
 integrity_diff <- compute_cluster_diff(year_subset,
                                        "Degree of Integrity",
                                        2018,
@@ -112,50 +153,8 @@ ggsave_facet(
   here("figures","12-integrity-cluster-change.png")
 )
 
-# political cluster
-political_diff <- compute_cluster_diff(year_subset,
-                                       "Political Institutions",
-                                       2018,
-                                       2022) |>
-                  distinct(country_name,
-                           ctf_distance,
-                           lending_category,
-                           region,.keep_all = FALSE) |>
-                  filter(!is.na(ctf_distance))
 
-# Plot
-political_diff |>
-  mutate(country_name = reorder(country_name, ctf_distance)) |>
-  generate_diff_plot()
-
-ggsave_facet(
-  here("figures","09-political-cluster-change.png")
-)
-
-
-# Social cluster
-social_diff <- compute_cluster_diff(year_subset,
-                                       "Social Institutions",
-                                       2018,
-                                       2022) |>
-                distinct(country_name,
-                         ctf_distance,
-                         lending_category,
-                         region,.keep_all = FALSE) |>
-                filter(!is.na(ctf_distance))
-
-# Plot
-social_diff |>
-  mutate(country_name = reorder(country_name, ctf_distance)) |>
-  generate_diff_plot()
-
-ggsave_facet(
-  here("figures","10-social-cluster-change.png")
-)
-
-
-
-# Justice cluster
+# FIGURE 23. ANNEX Justice cluster
 justice_diff <- compute_cluster_diff(year_subset,
                                     "Justice Institutions",
                                     2018,
@@ -175,7 +174,7 @@ ggsave_facet(
   here("figures","23-annex-a-justice-cluster-change.png")
 )
 
-# Justice cluster
+# FIGURE 23. ANNEX Enviroment cluster
 env_diff <- compute_cluster_diff(year_subset,
                                      "Energy and Enviroment Institutions",
                                      2016,
@@ -194,3 +193,6 @@ env_diff |>
 ggsave_facet(
   here("figures","24-annex-b-enviromental-cluster-change.png")
 )
+
+
+### code-end

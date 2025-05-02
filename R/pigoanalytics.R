@@ -88,10 +88,10 @@ wrap_facet_titles <- function(x, width) {
 #' @export
 #'
 
-generate_labels_plot <- function(data, dimension) {
+generate_regional_minmax_plot <- function(data, dimension) {
   # Filter data for the specific dimension
   filtered_data <- data |>
-    filter(dimension == !!dimension) |>   # Use !! to inject the parameter dynamically
+    filter(dimension == !!dimension) |>
     mutate(region_w = wrap_facet_titles(region_long, width = 15))
 
   # Generate the plot
@@ -114,10 +114,10 @@ generate_labels_plot <- function(data, dimension) {
                         y = country_dimension_av,
                         label = country_code),
                     data = filtered_data |> filter(type == "Average"),
-                    size = 4, # Font size ## More info https://ggplot2.tidyverse.org/reference/geom_text.html
-                    nudge_x = -0.3, # Left aligned
-                    segment.color = NA,   # Delete connectors or arrows
-                    box.padding = 0.15,    # Min Space between tags
+                    size = 4,
+                    nudge_x = -0.3,
+                    segment.color = NA,
+                    box.padding = 0.15,
     ) +
 
     # Custom shapes for points

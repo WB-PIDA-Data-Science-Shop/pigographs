@@ -3,7 +3,7 @@
 export(compute_cluster_diff)
 export(compute_regional_statistics)
 export(generate_diff_plot)
-export(generate_labels_plot)
+export(generate_regional_minmax_plot)
 export(wrap_facet_titles)
 import(countrycode)
 import(dplyr)
