@@ -25,6 +25,8 @@ boost_priorities <- read_excel(
                     here("data-raw", "input", "boost", "budget_priorities.xlsx"), sheet = "Sheet2") |>
                     clean_names()
 
+lending_class <- read_csv(here("data-raw", "input", "wb", "client_countries.csv")) %>%
+                  select(country_code, lending_category)  # Keep only relevant columns
 
 
 ### Approved outlook
@@ -203,8 +205,6 @@ boost_priority_bud <- left_join( ### Reverse joint because 2 values are required
 
 
 
-
-
 ## 1.3 Plot Completeness
 
 # Ratio calculation
@@ -246,25 +246,30 @@ ex_no_outliers <- boost_ex_del_outliers |> tabyl(budget_line, year)
 
 
 # Last renaming
-budget_execution <-  boost_ex_del_outliers |>
-  mutate(
-    region = recode(region,
-                         "Europe & Central Asia" = "ECA",
-                         "East Asia & Pacific" = "EAP",
-                         "Latin America & Caribbean" = "LAC",
-                         "Middle East & North Africa" = "MENA",
-                         "South Asia" = "SAR",
-                         "Sub-Saharan Africa" = "SSA")
-  ) |>
-  select(-value_country) |>
-  rename(spending_type = sp_type,
-         execution_ratio = ex_ratio)
+budget_execution_region <-  boost_ex_del_outliers |>
+                      mutate(
+                        region = recode(region,
+                                             "Europe & Central Asia" = "ECA",
+                                             "East Asia & Pacific" = "EAP",
+                                             "Latin America & Caribbean" = "LAC",
+                                             "Middle East & North Africa" = "MENA",
+                                             "South Asia" = "SAR",
+                                             "Sub-Saharan Africa" = "SSA")
+                      ) |>
+                      select(-value_country) |>
+                      rename(spending_type = sp_type,
+                             execution_ratio = ex_ratio)
+
+# Subset to client countries
+
+budget_execution <- budget_execution_region |>
+                            left_join(lending_class, by = "country_code") |>
+                            filter(country_code %in% lending_class$country_code) |>
+                            relocate(lending_category, .after = country_code)
+
 
 
 # Export dataframe
 usethis::use_data(budget_execution, overwrite = TRUE)
-
-
-
 
 

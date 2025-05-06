@@ -8,7 +8,6 @@
 A data frame with the following columns:
 \describe{
 \item{country_code}{Country Code ISO3.}
-\item{country_group}{Country Group Classification.}
 \item{country_name}{Country Name.}
 \item{income_group}{Income WB Classification.}
 \item{lending_category}{Lending WB Classification.}

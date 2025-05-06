@@ -1,16 +1,26 @@
-
-- [pigographs (under construction)](#pigographs-under-construction)
-  - [Overview](#overview)
-  - [Installation](#installation)
-  - [Instructions for Replicators](#instructions-for-replicators)
-  - [List of Exhibits](#list-of-exhibits)
-  - [Requirements](#requirements)
+---
+output: 
+  github_document:
+    toc: yes
+    toc_depth: 2
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+
+```
 
 # pigographs (under construction)
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 ## Overview
@@ -20,7 +30,7 @@ Institutions Global Observatory (PIGO): Annual Review 2025.
 
 ## Installation
 
-``` r
+```{r}
 # Run the following code to ensure you have all the packages needed
 find_root <- function(filename = "renv.lock") {
   path <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
@@ -35,13 +45,12 @@ find_root <- function(filename = "renv.lock") {
 project_root <- find_root()
 
 renv::restore(project = project_root)
-#> - The library is already synchronized with the lockfile.
 ```
 
 You can install the development version of pigographs from
 [GitHub](https://github.com/) with:
 
-``` r
+```{r, eval=FALSE }
 # Install devtools if you haven't already
 install.packages("devtools")
 
@@ -49,8 +58,9 @@ install.packages("devtools")
 pak::pak("WB-PIDA-Data-Science-Shop/pigographs")
 ```
 
-``` r
+```{r}
 ### Main script to build the book
+
 ```
 
 ## Instructions for Replicators
@@ -64,3 +74,4 @@ pak::pak("WB-PIDA-Data-Science-Shop/pigographs")
 ### Software Requirements
 
 ### Memory and Runtime and Storage Requirements
+

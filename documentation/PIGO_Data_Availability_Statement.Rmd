@@ -1,0 +1,42 @@
+---
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 3
+---
+
+
+# PIGO Data Availability Statement (DAS)
+
+## Overview
+
+## Data
+
+
+
+## Chapter 1: Global and Regional Trends in Institutional Capacity
+
+### a. Raw
+
+
+### b. Processed
+
+
+
+## Chapter 2: Operational Engagements and Evidence on Institutional Capacity
+
+### a. Raw
+
+
+### b. Processed
+
+
+## Annex
+
+### a. Raw
+
+
+### b. Processed
+
+
+

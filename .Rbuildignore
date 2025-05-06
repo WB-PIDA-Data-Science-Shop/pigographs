@@ -1,8 +1,9 @@
 ^pigographs\.Rproj$
 ^\.Rproj\.user$
-Spielplatz
-figures
+^Spielplatz$
+^figures$
 ^data-raw$
 ^LICENSE\.md$
 ^renv$
 ^renv\.lock$
+^README\.Rmd$

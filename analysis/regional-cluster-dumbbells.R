@@ -53,7 +53,7 @@ ggsave_db <- partial(
 
 options(ggrepel.max.overlaps = Inf)
 
-
+set.seed(101010)
 
 # data-load ---------------------------------------------------------------
 
@@ -86,7 +86,7 @@ pol_data |>
   scale_color_brewer(palette = "Paired")
 
 ggsave_db(
-  here("figures","05-poli-arena-hrm-regional-dumbbells.png")
+  here("figures","05-poli-arena-regional-dumbbells.png")
 )
 
 
@@ -112,7 +112,7 @@ social_data |>
   scale_color_brewer(palette = "Paired")
 
 ggsave_db(
-  here("figures","05-social-arena-hrm-regional-dumbbells.png")
+  here("figures","05-social-arena-regional-dumbbells.png")
 )
 
 

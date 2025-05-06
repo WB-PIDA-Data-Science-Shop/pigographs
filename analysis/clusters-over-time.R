@@ -171,7 +171,7 @@ justice_diff |>
   generate_diff_plot()
 
 ggsave_facet(
-  here("figures","23-annex-a-justice-cluster-change.png")
+  here("figures","annex-a-justice-cluster-change.png")
 )
 
 # FIGURE 23. ANNEX Enviroment cluster
@@ -191,7 +191,7 @@ env_diff |>
   generate_diff_plot()
 
 ggsave_facet(
-  here("figures","24-annex-b-enviromental-cluster-change.png")
+  here("figures","annex-b-enviromental-cluster-change.png")
 )
 
 

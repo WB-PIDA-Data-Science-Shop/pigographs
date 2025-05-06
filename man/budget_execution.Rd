@@ -6,18 +6,6 @@
 \title{Budget Execution Data}
 \format{
 A data frame with the following columns:
-\describe{
-\item{region}{Region WB Classification.}
-\item{country_name}{Country Name.}
-\item{country_code}{Country Code ISO3.}
-\item{year}{Year.}
-\item{approved_value}{Approved budget value (numeric).}
-\item{budget_line}{Boost Data Classification.}
-\item{sector}{Boost Data Aggregation Classification.}
-\item{execution_ratio}{Ratio of Budget Execution (numeric, 0 to 1).}
-\item{executed_value}{Executed budget value (numeric).}
-\item{spending_type}{Spending Classification.}
-}
 }
 \source{
 BOOST World Bank Data \url{https://www.worldbank.org/en/programs/boost-portal/boost-data-lab#1}.

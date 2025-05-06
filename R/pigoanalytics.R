@@ -309,3 +309,89 @@ plot_cluster_appendix <- function(data, cluster_ctf, year_label) {
 
 
 
+#’ Plot Budget Execution Ratios by Region
+#’
+#’ @description
+#’ Filters a BOOST budget execution data frame by year, sector, and budget_line,
+#’ then returns a flipped execution‐ratio plot with reference bands.
+#’
+#’ @param data
+#’   A data.frame or tibble containing at least:
+#’   `year` (numeric), `sector`, `budget_line`,
+#’   `region`, `execution_ratio`, `country_code`.
+#’ @param exyear
+#’   Year to filter (numeric or a string representing an integer).
+#’ @param govsector
+#’   One value from the `sector` column (e.g. `"Health"`).
+#’ @param budgetline
+#’   One value from the `budget_line` column
+#’   (e.g. `"Spending: Capital expenditures in health"`).
+#’
+#’ @return
+#’   A ggplot2 object.
+#’ @importFrom dplyr filter
+#’ @importFrom ggplot2 ggplot aes geom_rect geom_hline geom_point labs theme_minimal coord_flip theme scale_color_brewer ylim
+#’ @importFrom ggrepel geom_text_repel
+#’ @export
+plot_budget_execution <- function(data,
+                                  exyear,
+                                  govsector,
+                                  budgetline) {
+  # coerce exyear to numeric if needed
+  if (is.character(exyear)) {
+    exyear2 <- suppressWarnings(as.numeric(exyear))
+    if (is.na(exyear2)) {
+      stop("`exyear` must be numeric or a string coercible to numeric.")
+    }
+  } else {
+    exyear2 <- exyear
+  }
+
+  df <- data %>%
+    filter(
+      year        == exyear2,
+      sector      == govsector,
+      budget_line == budgetline
+    )
+
+  if (nrow(df) == 0) {
+    warning("No data for year=", exyear2,
+            ", sector='", govsector,
+            "', budget_line='", budgetline, "'.")
+  }
+
+  ggplot(df, aes(x = region, y = execution_ratio, color = region)) +
+    geom_rect(
+      aes(xmin = -Inf, xmax = Inf, ymin = 80, ymax = 120),
+      fill = "#d0ece7", alpha = 0.5, inherit.aes = FALSE
+    ) +
+    geom_hline(
+      yintercept = c(50, 150),
+      linetype   = "dotted",
+      linewidth  = 1.5,
+      alpha      = 0.25,
+      color      = "darkred"
+    ) +
+    geom_hline(
+      yintercept = 100,
+      linetype   = "solid",
+      linewidth  = 2,
+      alpha      = 0.75,
+      color      = "#117a65"
+    ) +
+    geom_point(size = 2) +
+    geom_text_repel(
+      aes(label = country_code),
+      segment.size = 0,
+      size         = 4,
+      hjust        = 1
+    ) +
+    labs(
+      x     = "Region",
+      y     = "Budget Execution Rate (%)"
+    )
+}
+
+
+
+
