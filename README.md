@@ -1,45 +1,74 @@
+pigographs (under construction)
+================
 
-- [pigographs (under construction)](#pigographs-under-construction)
-  - [Overview](#overview)
-  - [Installation](#installation)
-  - [Instructions for Replicators](#instructions-for-replicators)
-  - [List of Exhibits](#list-of-exhibits)
-  - [Requirements](#requirements)
+- [Overview](#overview)
+- [Installations for Replication](#installations-for-replication)
+- [List of Exhibits](#list-of-exhibits)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# pigographs (under construction)
-
 <!-- badges: start -->
 <!-- badges: end -->
 
 ## Overview
 
 This repository aims to reproduce the analysis presented in the Public
-Institutions Global Observatory (PIGO): Annual Review 2025.
+Institutions Global Observatory (PIGO): Annual Review 2025. The
+Pigographs package is designed to streamline the analysis and
+visualization of institutional and governance indicators. It provides:
 
-## Installation
+Data transformations: scripts to clean and reshape raw inputs.
+
+Data Analysis: functions and scripts for visualization and reporting.
+
+Reproducibility: a standardized workflow to reproduce the final output.
+
+This README guides you through setting up your environment, restoring
+dependencies, and running the full pipeline.
+
+Project Structure
+
+    ├── data-raw
+    │   └── source      # Raw-data transformation scripts
+    ├── analysis        # Data analysis and plotting scripts
+    ├── R               # Package functions
+    ├── documentation   # DAS and other docuemntation
+    ├── data            # Transformed data frames available to lazy-load
+    ├── renv            # For environment setting
+    ├── README.Rmd      # This file (source for README.md)
+    └── pigographs.Rproj # RStudio project file
+
+Requierments:
+
+Software: R (\>= 4.3), renv for dependency management and devtools (for
+installing development versions).
+
+## Installations for Replication
+
+### 1. Restoring Dependencies
+
+Before running any scripts, restore package versions from renv.lock.
+From the project root:
 
 ``` r
-# Run the following code to ensure you have all the packages needed
+# Locate project root and restore packages
 find_root <- function(filename = "renv.lock") {
   path <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
   while (!file.exists(file.path(path, filename))) {
-    new_path <- dirname(path)
-    if (new_path == path) stop(paste("Could not find", filename, "in any parent directory"))
-    path <- new_path
+    parent <- dirname(path)
+    if (parent == path) {
+      stop("Cannot find renv.lock in any parent directory.")
+    }
+    path <- parent
   }
-  return(path)
+  path
 }
 
 project_root <- find_root()
-
 renv::restore(project = project_root)
-#> - The library is already synchronized with the lockfile.
 ```
 
-You can install the development version of pigographs from
-[GitHub](https://github.com/) with:
+(optional) In case you are interested in installing the development
+version of pictographs from [GitHub](https://github.com/) you can:
 
 ``` r
 # Install devtools if you haven't already
@@ -49,18 +78,42 @@ install.packages("devtools")
 pak::pak("WB-PIDA-Data-Science-Shop/pigographs")
 ```
 
+### 2. Running the Full Workflow
+
+The package workflow consists of two main steps:
+
+Data Transformation: source all raw-data cleaning scripts located at
+`data-raw/source`
+
+Data Analysis: source all analysis and plotting scripts at `analysis`
+
+Simply knit this document (README.Rmd) or run the setup chunk at the
+top:
+
 ``` r
-### Main script to build the book
+library(here)
+
+# helper to source every .R/.r file in a directory
+source_all <- function(dir) {
+  scripts <- list.files(
+    path       = dir,
+    pattern    = "\\.[Rr]$",
+    full.names = TRUE
+  )
+  invisible(lapply(scripts, source))
+}
+
+# Definining all the folders
+dirs <- c(
+  here("data-raw", "source"), # Data Transformation scripts
+  here("analysis") # Data Analysis scripts
+)
+
+# Source all the scripts listeed
+invisible(lapply(dirs, source_all))
 ```
 
-## Instructions for Replicators
+After sourcing, all transformed figures (outputs) will be exported to
+the `figures` directory
 
 ## List of Exhibits
-
-## Requirements
-
-### Computational Requirements
-
-### Software Requirements
-
-### Memory and Runtime and Storage Requirements
