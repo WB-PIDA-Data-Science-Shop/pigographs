@@ -4,7 +4,6 @@ output:
   github_document:
     toc: yes
     toc_depth: 2
-toc-title: Table of Contents
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -35,8 +34,8 @@ Reproducibility: a standardized workflow to reproduce the final output.
 
 This README guides you through setting up your environment, restoring dependencies, and running the full pipeline.
 
-Project Structure:
-
+Project Structure
+```
 ├── data-raw
 │   └── source      # Raw-data transformation scripts
 ├── analysis        # Data analysis and plotting scripts
@@ -46,11 +45,11 @@ Project Structure:
 ├── renv            # For environment setting
 ├── README.Rmd      # This file (source for README.md)
 └── pigographs.Rproj # RStudio project file
+```
 
 Requierments:
 
 Software: R (>= 4.3), renv for dependency management and devtools (for installing development versions).
-
 
 
 ## Installations for Replication
@@ -58,7 +57,7 @@ Software: R (>= 4.3), renv for dependency management and devtools (for installin
 ### 1. Restoring Dependencies 
 Before running any scripts, restore package versions from renv.lock. From the project root:
 
-```{r include=FALSE}
+```{r eval=FALSE}
 # Locate project root and restore packages
 find_root <- function(filename = "renv.lock") {
   path <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
@@ -96,7 +95,7 @@ Data Analysis: source all analysis and plotting scripts at `analysis`
 Simply knit this document (README.Rmd) or run the setup chunk at the top:
 
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 library(here)
 
 # helper to source every .R/.r file in a directory
@@ -127,6 +126,3 @@ After sourcing, all transformed figures (outputs) will be exported to the `figur
 
 
 
-
-
-Last updated: r Sys.Date()
