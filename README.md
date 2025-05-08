@@ -48,8 +48,8 @@ installing development versions).
 
 ### 1. Restoring Dependencies
 
-Before running any scripts, restore package versions from renv.lock.
-From the project root:
+Before running any scripts, restore package versions from renv.lock byr
+running the following chunk. From the project root:
 
 ``` r
 # Locate project root and restore packages
@@ -88,9 +88,10 @@ Data Transformation: source all raw-data cleaning scripts located at
 `data-raw/source`
 
 Data Analysis: source all analysis and plotting scripts at `analysis`
+for reproducibility
 
-Simply knit this document (README.Rmd) or run the setup chunk at the
-top:
+Simply knit this document (README.Rmd) or, after step 1, run the
+following code:
 
 ``` r
 library(here)
@@ -116,4 +117,4 @@ invisible(lapply(dirs, source_all))
 ```
 
 After sourcing, all transformed figures (outputs) will be exported to
-the `figures` directory
+the `figures` directory of this repository
