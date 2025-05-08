@@ -41,8 +41,10 @@ Project Structure
 
 Requierments:
 
-Software: R (\>= 4.3), renv for dependency management and devtools (for
-installing development versions).
+Software: R (\>= 4.3), renv for dependency management and devtools.
+Memory and Run time and Storage Requirements:No minimum memory required,
+16 GB recommended. Expected run time is ~2 minutes end-to-end on
+recommended hardware
 
 ## Installations for Replication
 
