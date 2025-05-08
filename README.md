@@ -3,7 +3,6 @@ pigographs (under construction)
 
 - [Overview](#overview)
 - [Installations for Replication](#installations-for-replication)
-- [List of Exhibits](#list-of-exhibits)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
@@ -20,7 +19,7 @@ Data transformations: scripts to clean and reshape raw inputs.
 
 Data Analysis: functions and scripts for visualization and reporting.
 
-Reproducibility: a standardized workflow to reproduce the final output.
+Reproducibility: a standardized workflow to reproduce the final outputs
 
 This README guides you through setting up your environment, restoring
 dependencies, and running the full pipeline.
@@ -28,13 +27,16 @@ dependencies, and running the full pipeline.
 Project Structure
 
     ├── data-raw
-    │   └── source      # Raw-data transformation scripts
-    ├── analysis        # Data analysis and plotting scripts
-    ├── R               # Package functions
-    ├── documentation   # DAS and other docuemntation
-    ├── data            # Transformed data frames available to lazy-load
-    ├── renv            # For environment setting
-    ├── README.Rmd      # This file (source for README.md)
+    │   └── source       # Raw-data transformation scripts
+    │   └── input        # Raw data files ordered by data source
+    │   └── output       # Tranformed Data for ad-hoc analysis
+    ├── analysis         # Data analysis and plotting scripts
+    ├── R                # Package functions
+    ├── documentation    # DAS and other reproducibility docuemntation
+    ├── data             # Transformed data frames available to lazy-load
+    ├── figures          # Final outputs for verification
+    ├── renv             # For environment setting
+    ├── README.Rmd       # This file (Read and Knit to reproduce analysis)
     └── pigographs.Rproj # RStudio project file
 
 Requierments:
@@ -93,6 +95,12 @@ top:
 ``` r
 library(here)
 
+# Defining all the folders
+dirs <- c(
+          # here("data-raw", "source"), # Data Cleaning Scripts (optional)
+            here("analysis") # Data Analysis scripts
+)
+
 # helper to source every .R/.r file in a directory
 source_all <- function(dir) {
   scripts <- list.files(
@@ -103,17 +111,9 @@ source_all <- function(dir) {
   invisible(lapply(scripts, source))
 }
 
-# Definining all the folders
-dirs <- c(
-  here("data-raw", "source"), # Data Transformation scripts
-  here("analysis") # Data Analysis scripts
-)
-
-# Source all the scripts listeed
+# Source all the scripts listed
 invisible(lapply(dirs, source_all))
 ```
 
 After sourcing, all transformed figures (outputs) will be exported to
 the `figures` directory
-
-## List of Exhibits

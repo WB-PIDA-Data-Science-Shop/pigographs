@@ -7,17 +7,18 @@ output:
 
 # PIGO Data Availability Statement (DAS)
 
-## Overview
+## i. Overview
+PIGO report provides a concise, high-level synthesis of evidence on public institutions around the world, designed to inform World Bank staff about the latest trends in institutional capacity, reforms and analytics. Drawing on quantitative data from the Country-Level Institutional Assessment and Review (CLIAR) database and other World Bank indicators the report 
 
 The data is obtained from
 
-## Data
+## ii. Data
 
 ## Chapter 1: Global and Regional Trends in Institutional Capacity
 
 **Filename : `cliar\db_variables.xlsx`**
 
--   Availability:  World Bank Internal, based on public data.
+-   Availability: World Bank Internal, based on public data.
 
 -   Note: Raw. Data has not been modified.
 
@@ -29,7 +30,7 @@ The data is obtained from
 
 **Filename : `cliar\dynamic_ctf_032525.dta`**
 
--   Availability:  World Bank Internal, based on public data.
+-   Availability: World Bank Internal, based on public data.
 
 -   Note: Raw. Data has not been modified.
 
@@ -41,7 +42,7 @@ The data is obtained from
 
 **Filename : `cliar\static_ctf_032525.dta`**
 
--   Availability:  World Bank Internal, based on public data.
+-   Availability: World Bank Internal, based on public data.
 
 -   Note: Raw. Data has not been modified.
 
@@ -65,7 +66,7 @@ The data is obtained from
 
 **Filename : `wb\CLASS.xlsx`**
 
--   Availability:  World Bank Public.
+-   Availability: World Bank Public.
 
 -   Note: Raw. Data has not been modified.
 
@@ -74,7 +75,6 @@ The data is obtained from
 -   URL: <https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups>
 
 -   Access year: February 2025.
-
 
 ## Chapter 2: Operational Engagements and Evidence on Institutional Capacity
 
@@ -115,3 +115,5 @@ The data is obtained from
 -   Access year: May 2025.
 
 ## Annex
+
+## iii. List of Exhibits

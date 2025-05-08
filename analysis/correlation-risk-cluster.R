@@ -23,8 +23,8 @@ cliar_db_variables <- read_xlsx(here("data-raw", "input", "cliar", "db_variables
 
 # Identify CLIAR cluster variables
 cliar_cluster_avg <- ctf_country |>
-                      select(ends_with("_avg")) |>
-                      colnames()
+  select(ends_with("_avg")) |>
+  colnames()
 
 # Read and clean WDI data
 wdi <- read_excel(
@@ -105,114 +105,6 @@ risk_data <- read_excel(
 merged_data_risk <- merged_data |>
   left_join(risk_data, by = c("Country Name" = "Country Name"))
 
-
-
-# ----------------------------------------------------------------------------
-# Analysis A: WDI vs. CLIAR (CTF) with R² annotation
-# ----------------------------------------------------------------------------
-for (wdi_var in wdi_vars) {
-  # Determine shared Y title
-  overall_y_title <- if (
-    wdi_var == "GDP per capita, PPP (constant 2021 international $)"
-  ) {
-    "log(GDP per capita, PPP (constant 2021 international $)) (circa 2022)"
-  } else {
-    paste(wdi_var, "(circa 2022)")
-  }
-
-  plot_list    <- list()
-  country_lists <- list()
-
-  for (ctf_key in names(ctf_labels)) {
-    ctf_name  <- ctf_labels[[ctf_key]]
-    plot_data <- merged_data %>% drop_na(all_of(c(ctf_name, wdi_var)))
-
-    country_lists[[ctf_name]] <- sort(unique(plot_data$country_code))
-
-    # Compute y_val
-    plot_data <- plot_data %>% mutate(
-      y_val = if (
-        wdi_var == "GDP per capita, PPP (constant 2021 international $)"
-      ) log(.data[[wdi_var]]) else .data[[wdi_var]]
-    )
-
-    # Fit quadratic model & extract R² via dynamic formula
-    formula_str <- sprintf("y_val ~ poly(`%s`, 2)", ctf_name)
-    fit <- lm(as.formula(formula_str), data = plot_data)
-    r2  <- summary(fit)$r.squared
-    label_r2 <- sprintf("R² = %.3f", r2)
-
-    # Position for annotation
-    x_pos <- min(plot_data[[ctf_name]], na.rm = TRUE)
-    y_pos <- max(plot_data$y_val, na.rm = TRUE)
-
-    # Build plot
-    p <- ggplot(plot_data,
-                aes(x = .data[[ctf_name]], y = y_val, color = region)) +
-      geom_point(size = 2) +
-      geom_smooth(
-        method  = "lm",
-        formula = y ~ poly(x, 2),
-        se      = FALSE,
-        color   = "black",
-        linetype= "dashed"
-      ) +
-      annotate(
-        "text", x = x_pos, y = y_pos, label = label_r2,
-        hjust = 0, vjust = 1, size = 4
-      ) +
-      labs(x = paste(ctf_name, "(2019-2023)"), color = "Region") +
-      scale_color_brewer(palette = "Paired") +
-      theme_minimal() +
-      theme(
-        axis.title.y    = element_blank(),
-        axis.text.x     = element_text(size = 14),
-        axis.text.y     = element_text(size = 14),
-        axis.title      = element_text(size = 16),
-        plot.margin     = margin(10,10,15,10),
-        legend.position = "bottom",
-        legend.title    = element_text(face = "bold", size = 16),
-        legend.text     = element_text(size = 14),
-        panel.border    = element_rect(color = "black", fill = NA, size = 1)
-      )
-
-    plot_list[[ctf_name]] <- p
-  }
-
-  # Remove y-axis on even columns
-  plot_list_shared <- lapply(seq_along(plot_list), function(i) {
-    if (i %% 2 == 0) plot_list[[i]] +
-      theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
-    else plot_list[[i]]
-  })
-
-  # Combine into 3x2 panel
-  combined_panel <- (plot_list_shared[[1]] | plot_list_shared[[2]]) /
-    (plot_list_shared[[3]] | plot_list_shared[[4]]) /
-    (plot_list_shared[[5]] | plot_list_shared[[6]]) +
-    plot_layout(guides = "collect") &
-    theme(
-      legend.position = "bottom",
-      legend.box      = "horizontal",
-      legend.title    = element_text(face = "bold", size = 16),
-      legend.text     = element_text(size = 16)
-    )
-
-  shared_y <- textGrob(overall_y_title, rot = 90,
-                       gp = gpar(fontsize = 16, fontface = "bold"))
-  final_plot <- wrap_elements(shared_y) + combined_panel +
-    plot_layout(widths = c(0.1,1))
-
-  # Save outputs
-  safe_name <- gsub("[^A-Za-z0-9]", "", wdi_var)
-  ggsave(
-    file.path(output_dir, paste0("Repo_Correlation_", safe_name, ".png")),
-    final_plot, width = 12, height = 12, dpi = 300, bg = "white"
-  )
-}
-
-
-
 # ----------------------------------------------------------------------------
 # Analysis B: Country Risk vs. CLIAR with R² annotation
 # ----------------------------------------------------------------------------
@@ -291,7 +183,7 @@ final_plot <- wrap_elements(shared_y) + combined_panel +
   plot_layout(widths = c(0.1,1))
 
 ggsave(
-  file.path(output_dir, "CountryRisk_vs_CTFClusters_repo.png"),
+  file.path(output_dir, "04-CountryRisk_vs_CTFClusters.png"),
   final_plot, width = 12, height = 12, dpi = 300, bg = "white"
 )
 

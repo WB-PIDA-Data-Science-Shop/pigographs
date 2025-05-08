@@ -1,4 +1,6 @@
-# 1. set-up ---------------------------------------------------------------
+
+# Load libraries
+
 library(dplyr)
 library(readr)
 library(ggplot2)
@@ -7,6 +9,8 @@ library(tidyr)
 library(janitor)
 library(cowplot)
 library(here)
+
+devtools::load_all()
 
 theme_set(
   theme_cowplot(
@@ -21,20 +25,16 @@ options(
   )
 )
 
-# 2. read-in data ------------------------------------------------------------
-gsps <- read_csv(
-  here("data-raw", "input", "wb", "gsps.csv")
-) |>
-  clean_names()
+# read-in data ------------------------------------------------------------
 
-gsps_management <- gsps |>
-  filter(
-    str_detect(section_org, "(?i)Management")
-  )
 
-# 3. analysis -------------------------------------------------------------
+management_data <- gsps_management
+
+
+
+# analysis -------------------------------------------------------------
 # target setting
-gsps_management |>
+management_data |>
   filter(
     indicator == "Clear targets" &
       group == "Institution"
