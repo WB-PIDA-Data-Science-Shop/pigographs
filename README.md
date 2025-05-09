@@ -1,4 +1,4 @@
-pigographs (under construction)
+pigographs
 ================
 
 - [Overview](#overview)
@@ -28,7 +28,7 @@ Project Structure
 
     ├── data-raw
     │   └── source       # Raw-data transformation scripts
-    │   └── input        # Raw data files ordered by data source
+    │   └── input        # Raw data files (provided by EGVPI Team)
     │   └── output       # Tranformed Data for ad-hoc analysis
     ├── analysis         # Data analysis and plotting scripts
     ├── R                # Package functions
@@ -51,7 +51,8 @@ recommended hardware
 ### 1. Restoring Dependencies
 
 Before running any scripts, restore package versions from renv.lock byr
-running the following chunk. From the project root:
+running the following chunk. You can open the pigographs.Rproj and
+restore or run from this file the following code:
 
 ``` r
 # Locate project root and restore packages
@@ -86,14 +87,14 @@ pak::pak("WB-PIDA-Data-Science-Shop/pigographs")
 
 The package workflow consists of two main steps:
 
-Data Transformation: source all raw-data cleaning scripts located at
+Data Transformation: Make sure you have the input filder provided by the
+EGVPI team and source all raw-data cleaning scripts located at
 `data-raw/source`
 
 Data Analysis: source all analysis and plotting scripts at `analysis`
 for reproducibility
 
-Simply knit this document (README.Rmd) or, after step 1, run the
-following code:
+For both, simply run the following code:
 
 ``` r
 library(here)
