@@ -6,7 +6,7 @@ library(here);  library(stringr); library(scales); library(haven)
 library(readxl); library(grid)
 
 input_dir  <- here("data","input","correlation")
-output_dir <- here("figs","Correlation","PIGO")
+output_dir <- here("figures")
 
 # 0.1 CLIAR country (exclude NA & North America)
 ctf_country <- read_dta(file.path(input_dir, "static_ctf_012225.dta")) %>%
