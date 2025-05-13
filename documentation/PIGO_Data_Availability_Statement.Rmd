@@ -52,6 +52,18 @@ The data is obtained mainly from the Country-Level Institutional Assessment and 
 
 -   Access year: March 2025.
 
+**Filename : `cliar\static_ctf_012225.dta`**
+
+-   Availability: World Bank Internal, based on public data.
+
+-   Note: Raw. Data has not been modified.
+
+-   Source: CLIAR Dashboard
+
+-   URL: <https://w0lxdrconn01.worldbank.org/CLIAR/>
+
+-   Access year: January 2025.
+
 **Filename : `wb\client_countries.csv`**
 
 -   Availability: Public.
@@ -75,6 +87,30 @@ The data is obtained mainly from the Country-Level Institutional Assessment and 
 -   URL: <https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups>
 
 -   Access year: February 2025.
+
+**Filename : `country_risk_index.xlsx`**
+
+-   Availability: Fitch Solutions 
+
+-   Note: Raw.
+
+-   Source: Sourced from Fitch Solutions by Awais
+
+-   URL: NA
+
+-   Access year: 2025.
+
+**Filename : `P_Data_Extract_From_World_Development_Indicators updated.xlsx`**
+
+-   Availability: World Bank Public.
+
+-   Note: Raw.
+
+-   Source: WDI
+
+-   URL: <https://databank.worldbank.org/source/world-development-indicators>
+
+-   Access year: 2025.
 
 ## Chapter 2: Operational Engagements and Evidence on Institutional Capacity
 
