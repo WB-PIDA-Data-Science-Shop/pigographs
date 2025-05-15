@@ -309,30 +309,32 @@ plot_cluster_appendix <- function(data, cluster_ctf, year_label) {
 
 
 
-#’ Plot Budget Execution Ratios by Region
-#’
-#’ @description
-#’ Filters a BOOST budget execution data frame by year, sector, and budget_line,
-#’ then returns a flipped execution‐ratio plot with reference bands.
-#’
-#’ @param data
-#’   A data.frame or tibble containing at least:
-#’   `year` (numeric), `sector`, `budget_line`,
-#’   `region`, `execution_ratio`, `country_code`.
-#’ @param exyear
-#’   Year to filter (numeric or a string representing an integer).
-#’ @param govsector
-#’   One value from the `sector` column (e.g. `"Health"`).
-#’ @param budgetline
-#’   One value from the `budget_line` column
-#’   (e.g. `"Spending: Capital expenditures in health"`).
-#’
-#’ @return
-#’   A ggplot2 object.
-#’ @importFrom dplyr filter
-#’ @importFrom ggplot2 ggplot aes geom_rect geom_hline geom_point labs theme_minimal coord_flip theme scale_color_brewer ylim
-#’ @importFrom ggrepel geom_text_repel
-#’ @export
+#' Plot Budget Execution Ratios by Region
+#'
+#' @description
+#' Filters a BOOST budget execution data frame by year, sector, and budget_line,
+#' then returns a flipped execution‐ratio plot with reference bands.
+#'
+#' @param data
+#'   A data.frame or tibble containing at least:
+#'   `year` (numeric), `sector`, `budget_line`,
+#'   `region`, `execution_ratio`, `country_code`.
+#' @param exyear
+#'   Year to filter (numeric or a string representing an integer).
+#' @param govsector
+#'   One value from the `sector` column (e.g. `"Health"`).
+#' @param budgetline
+#'   One value from the `budget_line` column
+#'   (e.g. `"Spending: Capital expenditures in health"`).
+#'
+#' @return
+#'   A ggplot2 object.
+#' @importFrom dplyr filter
+#' @importFrom ggplot2 ggplot aes geom_rect geom_hline geom_point labs theme_minimal coord_flip theme scale_color_brewer ylim
+#' @importFrom ggrepel geom_text_repel
+#' @export
+
+
 plot_budget_execution <- function(data,
                                   exyear,
                                   govsector,

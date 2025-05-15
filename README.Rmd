@@ -24,45 +24,52 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-This repository aims to reproduce the analysis presented in the Public Institutions Global Observatory (PIGO): Annual Review 2025. The Pigographs package is designed to streamline the analysis and visualization of institutional and governance indicators. It provides:
+This repository reproduces the analysis presented in the Public Institutions Global Observatory (PIGO): Annual Review 2025. The `Pigographs` package is designed to streamline the analysis and visualization of institutional and governance indicators. It provides the following key features:
 
-Data transformations: scripts to clean and reshape raw inputs.
+Data Transformations: Scripts to clean and reshape raw inputs, located in the `data-raw/source` directory. Data Analysis: Functions in the `R` directory and scripts in the `analysis` directory for generating visualizations and insights. This `README` guides you through setting up your environment, restoring dependencies, and running the full analysis pipeline.
 
-Data Analysis: functions and scripts for visualization and reporting.
+**Project Structure:**
 
-Reproducibility: a standardized workflow to reproduce the final outputs
+The repository is organized as follows:
 
-This README guides you through setting up your environment, restoring dependencies, and running the full pipeline.
-
-Project Structure
-```
+```         
 ├── data-raw
-│   └── source       # Raw-data transformation scripts
-│   └── input        # Raw data files (provided by EGVPI Team)
-│   └── output       # Tranformed Data for ad-hoc analysis
-├── analysis         # Data analysis and plotting scripts
-├── R                # Package functions
-├── documentation    # DAS and other reproducibility docuemntation
-├── data             # Transformed data frames available to lazy-load
-├── figures          # Final outputs for verification
-├── renv             # For environment setting
-├── README.Rmd       # This file (Read and Knit to reproduce analysis)
-└── pigographs.Rproj # RStudio project file
+│   ├── source                  # Scripts for transforming raw data
+│   ├── input                   # Raw data files (provided by the EGVPI Team)
+│   └── output                  # Transformed data for ad-hoc analysis
+├── analysis                    # Scripts for data analysis and plotting
+├── R                           # Package functions
+├── documentation               # Documentation for reproducibility (e.g., DAS)
+├── data                        # Transformed data frames available for lazy-loading
+├── figures                     # Final outputs (e.g., plots) for verification
+├── renv                        # Dependency management directory
+├── README.Rmd                  # This file (knit to reproduce the analysis)
+└── pigographs.Rproj            # RStudio project file
 ```
 
-Requierments:
+**Requirements:**
 
-Software: R (>= 4.3), renv for dependency management and devtools. 
-Memory and Run time and Storage Requirements:No minimum memory required, 16 GB recommended. 
-Expected run time is ~2 minutes end-to-end on recommended hardware
+### Software
 
+-   **R**: Version 4.3 or higher
+
+-   **Dependency Management**: `renv` for managing package dependencies
+
+-   **Development Tools**: `devtools` for package loading
+
+### Hardware
+
+-   **Memory**: No minimum required, but 16 GB is recommended for optimal performance.
+
+-   **Run Time**: ~3 minutes on recommended hardware.
 
 ## Installations for Replication
 
-### 1. Restoring Dependencies 
-Before running any scripts, restore package versions from renv.lock byr running the following chunk. You can open the pigographs.Rproj and restore or run from this file the following code:
+### 1. Restoring Dependencies
 
-```{r eval=FALSE}
+Before running any scripts, restore the exact package versions recorded in `renv.lock`. Open the `pigographs.Rproj` and run `renv::restore()`. Alternatively, you can run this helper snippet from your R console:
+
+```{r include=FALSE}
 # Locate project root and restore packages
 find_root <- function(filename = "renv.lock") {
   path <- normalizePath(getwd(), winslash = "/", mustWork = TRUE)
@@ -77,23 +84,19 @@ find_root <- function(filename = "renv.lock") {
 }
 
 project_root <- find_root()
+
 renv::restore(project = project_root)
+
+
 ```
 
-(optional) In case you are interested in installing the development version of pictographs from [GitHub](https://github.com/) you can:
 
-```{r, eval=FALSE }
-# Install devtools if you haven't already
-install.packages("devtools")
 
-# install.packages("pak")
-pak::pak("WB-PIDA-Data-Science-Shop/pigographs")
-```
+### 2. Running the Full Workflow
 
-### 2. Running the Full Workflow 
 The package workflow consists of two main steps:
 
-Data Transformation: Make sure you have the input filder provided by the EGVPI team and source all raw-data cleaning scripts located at `data-raw/source`
+Data Transformation: Make sure you have the input folder provided by the EGVPI team and source all raw-data scripts located at `data-raw/source`
 
 Data Analysis: source all analysis and plotting scripts at `analysis` for reproducibility
 
@@ -120,11 +123,7 @@ source_all <- function(dir) {
 
 # Source all the scripts listed
 invisible(lapply(dirs, source_all))
+
 ```
-After sourcing, all transformed figures (outputs) will be exported to the `figures` directory of this repository
 
-
-
-
-
-
+All generated figures and outputs will be saved in the `figures/` directory. For details on table of exhibits, documentation, and advanced usage, please refer to the full README.doc
