@@ -18,7 +18,6 @@ gsps_management <- gsps |>
     str_detect(section_org, "(?i)Management")
   )
 
-
 # Export dataframe
 usethis::use_data(gsps_management, overwrite = TRUE)
 

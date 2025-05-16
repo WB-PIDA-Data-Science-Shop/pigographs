@@ -150,6 +150,17 @@ The data is obtained mainly from the Country-Level Institutional Assessment and 
 
 -   Access year: May 2025.
 
+**Filename : `wb/dgss.csv`.**
+-   Availability: Public.
+
+-   Note: Data has not been modified.
+
+-   Source: GovTech Maturity Index.
+
+-   URL: <https://datacatalogfiles.worldbank.org/ddh-published/0037889/DR0065450/WBG_GovTech%20Dataset_Dec2020.xlsx>
+
+-   Access year: May 2025.
+
 ## Annex
 
 ## iii. List of Exhibits
