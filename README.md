@@ -91,8 +91,8 @@ library(here)
 
 # Defining all the folders
 dirs <- c(
-          # here("data-raw", "source"), # Data Cleaning Scripts (optional)
-            here("analysis") # Data Analysis scripts
+          here("data-raw", "source"), # Data Cleaning Scripts (optional)
+          here("analysis") # Data Analysis scripts
 )
 
 # helper to source every .R/.r file in a directory
