@@ -14,7 +14,7 @@ A ggplot object showing the regional changes.
 }
 \description{
 Creates a lollipop-style chart of CTF score changes for each country,
-facetted by region with free y-axis scales. Each country’s change (
+facetted by region with free y-axis scales. Each country's change (
 \code{ctf_distance}) is shown as a line from 0 plus a point, with
 a reference horizontal line at 0. The chart is flipped for readability
 of country names.
