@@ -73,7 +73,7 @@ Replicating the results involves the following steps:
 
 **1. Restore Package Dependencies:**
 
-a\. Open the pigographs.Rproj file in RStudio.
+a\. Clone this repository and pen the pigographs.Rproj file in RStudio.
 
 b\. Execute the command renv::restore() in the RStudio console. This
 will install the exact package versions specified in the renv.lock file.
