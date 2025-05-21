@@ -38,7 +38,7 @@ The repository is organized as follows:
     ├── figures/            # Final generated plots.
     ├── man/                # R package manual pages.
     ├── renv/               # R package dependency management.
-    ├── README.Rmd          # Main file to run the reproducibility workflow.
+    ├── README.Rmd          # Overview to run workflow.
     ├── pigographs.Rproj    # RStudio project file.
     ├── .gitignore          # Files ignored by Git.
     ├── .Rbuildignore       # Files ignored when building.
@@ -47,6 +47,7 @@ The repository is organized as follows:
     ├── LICENSE             # Licensing information.
     ├── LICENSE.md          # License in Markdown format.
     ├── NAMESPACE           # Package namespace definition.
+    ├── main.R              # Main file to reproduce the whole workflow
     └── spielplatz/         # Sandbox/experimentation area.
 
 **Requirements:**
@@ -68,47 +69,35 @@ The repository is organized as follows:
 
 ## Installations for Replication
 
-### 1. Restoring Dependencies
+Replicating the results involves the following steps:
 
-Before running any scripts, restore the exact package versions recorded
-in `renv.lock`. Open the `pigographs.Rproj` and run `renv::restore()`.
-Alternatively, you can run this helper snippet from your R console:
+**1. Restore Package Dependencies:**
 
-### 2. Running the Full Workflow
+a\. Open the pigographs.Rproj file in RStudio.
 
-The package workflow consists of two main steps:
+b\. Execute the command renv::restore() in the RStudio console. This
+will install the exact package versions specified in the renv.lock file.
 
-Data Transformation: Make sure you have the input folder provided by the
-EGVPI team and source all raw-data scripts located at `data-raw/source`
+**2. Execute the Full Workflow:** To perform both stages conveniently,
+open the Main R script and run it. This will execute the following tasks
+in the required order.
 
-Data Analysis: source all analysis and plotting scripts at `analysis`
-for reproducibility
+a\. Data Transformation:
 
-For both, simply run the following code:
+- Confirm that you have received and placed the input/ folder provided
+  by the EGVPI team in the project’s root directory.
 
-``` r
-library(here)
+- Source each of the raw data preprocessing scripts located in the
+  data-raw/source/ subdirectory. Execute these scripts sequentially.
 
-# Defining all the folders
-dirs <- c(
-          here("data-raw", "source"), # Data Cleaning Scripts (optional)
-          here("analysis") # Data Analysis scripts
-)
+b\. Data Analysis & Visualization:
 
-# helper to source every .R/.r file in a directory
-source_all <- function(dir) {
-  scripts <- list.files(
-    path       = dir,
-    pattern    = "\\.[Rr]$",
-    full.names = TRUE
-  )
-  invisible(lapply(scripts, source))
-}
+- Source all analysis and plotting scripts found within the analysis/
+  subdirectory.
 
-# Source all the scripts listed
-invisible(lapply(dirs, source_all))
-```
+- Carefully verify that each plot generated in the figures/ folder
+  matches the corresponding figure in the PIGO Annual Review exactly.
 
-All generated figures and outputs will be saved in the `figures/`
-directory. For details on table of exhibits, documentation, and advanced
-usage, please refer to the full README.doc
+All generated figures and outputs will be saved in the figures folder.
+For detailed information on each exhibit, please refer to the List of
+Exhibits.
