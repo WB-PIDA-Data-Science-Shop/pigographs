@@ -5,6 +5,7 @@ library(dplyr); library(ggplot2); library(tidyr); library(patchwork)
 library(here);  library(stringr); library(scales); library(haven)
 library(readxl); library(grid)
 library(magrittr)
+library(stargazer)
 
 input_dir  <- here("data-raw","input","correlation")
 output_dir <- here("figures")
@@ -58,7 +59,6 @@ risk_data <- read_excel(
   select(`Country Name`, `Country Risk Index`) |>
   rename(country_risk = `Country Risk Index`) |>
   mutate(`Country Name` = trimws(`Country Name`))
-
 
 # ----------------------------------------------------------------------------
 # 1. Generic plotting function (with 2‐row legend)
@@ -177,13 +177,8 @@ run_ctf_plots <- function(country_df, ctf_vars, ctf_labels,
     max_l <- max(sapply(country_ls, length))
     padded <- lapply(country_ls, function(v){ length(v)<-max_l; v })
     dfc <- as.data.frame(padded, stringsAsFactors=FALSE)
-
-    # write.csv(dfc,
-    #           file.path(output_dir, file_csv),
-    #           row.names = FALSE, na = "")
   }
 }
-
 
 # ----------------------------------------------------------------------------
 # 2. Run all three cluster‐sets for both WDI & Risk
@@ -227,3 +222,40 @@ ctf_labels_4b <- c(
 run_ctf_plots(ctf_country,    ctf_vars_4b, ctf_labels_4b, "wdi",  "annex")
 run_ctf_plots(ctf_country,    ctf_vars_4b, ctf_labels_4b, "risk", "annex")
 
+# ----------------------------------------------------------------------------
+# 3. Regression on WDI & Risk
+# ----------------------------------------------------------------------------
+# Generate regression table in Annex 5
+lm_risk_institutions <- lm(
+  `Country Risk Index` ~ `Public Human Resource Management Institutions` +
+    `Digital and Data Institutions` + `Transparency and Accountability Institutions` +
+    `Degree of Integrity` + as.factor(region),
+  data = risk_data |>
+    rename(`Country Risk Index` = country_risk) |>
+    inner_join(
+      ctf_country |>
+          filter(region != "North America" & region != "" & region != " ") |>
+          select(all_of(ctf_vars_6), country_name, region) |>
+          rename(
+            `Public Human Resource Management Institutions` = vars_hrm_avg,
+            `Digital and Data Institutions` = vars_digital_avg,
+            `Transparency and Accountability Institutions` = vars_transp_avg,
+            `Degree of Integrity` = vars_anticorruption_avg
+          ),
+      by = c("Country Name" = "country_name")
+    ) |>
+    mutate(
+      across(
+        where(is.numeric),
+        \(col) as.vector(scale(col))
+      )
+    )
+)
+
+# export table
+stargazer(
+  lm_risk_institutions,
+  omit  = "as.factor",
+  type = "html",
+  out = here(output_dir, "lm_risk_institutions.doc")
+)
