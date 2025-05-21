@@ -27,18 +27,27 @@ pipeline.
 
 The repository is organized as follows:
 
-    ├── data-raw
-    │   ├── source                  # Scripts for transforming raw data
-    │   ├── input                   # Raw data files (provided by the EGVPI Team)
-    │   └── output                  # Transformed data for ad-hoc analysis
-    ├── analysis                    # Scripts for data analysis and plotting
-    ├── R                           # Package functions
-    ├── documentation               # Documentation for reproducibility (e.g., DAS)
-    ├── data                        # Transformed data frames available for lazy-loading
-    ├── figures                     # Final outputs (e.g., plots) for verification
-    ├── renv                        # Dependency management directory
-    ├── README.Rmd                  # This file (knit to reproduce the analysis)
-    └── pigographs.Rproj            # RStudio project file
+    ├── data-raw/           # Raw data and initial processing scripts.
+    │   ├── source          # Scripts for transforming raw data
+    │   ├── input           # Raw data files (provided by the EGVPI Team)
+    │   └── output          # Transformed data for ad-hoc analysis
+    ├── analysis/           # Scripts for analysis and plotting.
+    ├── R/                  # Custom R functions.
+    ├── documentation/      # Reproducibility documentation.
+    ├── data/               # Processed data for analysis.
+    ├── figures/            # Final generated plots.
+    ├── man/                # R package manual pages.
+    ├── renv/               # R package dependency management.
+    ├── README.Rmd          # Main file to run the reproducibility workflow.
+    ├── pigographs.Rproj    # RStudio project file.
+    ├── .gitignore          # Files ignored by Git.
+    ├── .Rbuildignore       # Files ignored when building.
+    ├── .Rprofile           # Project-specific R startup settings.
+    ├── DESCRIPTION         # Project metadata.
+    ├── LICENSE             # Licensing information.
+    ├── LICENSE.md          # License in Markdown format.
+    ├── NAMESPACE           # Package namespace definition.
+    └── spielplatz/         # Sandbox/experimentation area.
 
 **Requirements:**
 
@@ -82,8 +91,8 @@ library(here)
 
 # Defining all the folders
 dirs <- c(
-          # here("data-raw", "source"), # Data Cleaning Scripts (optional)
-            here("analysis") # Data Analysis scripts
+          here("data-raw", "source"), # Data Cleaning Scripts (optional)
+          here("analysis") # Data Analysis scripts
 )
 
 # helper to source every .R/.r file in a directory

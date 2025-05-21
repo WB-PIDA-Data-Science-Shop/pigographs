@@ -10,7 +10,7 @@ output:
 ## i. Overview
 PIGO report provides a concise, high-level synthesis of evidence on public institutions around the world, designed to inform World Bank staff about the latest trends in institutional capacity, reforms and analytics. 
 
-The data is obtained mainly from the Country-Level Institutional Assessment and Review (CLIAR) database and other World Bank indicators.
+The data is obtained mainly from the Country-Level Institutional Assessment and Review (CLIAR) database and other World Bank indicators. The main audience of this report is World Bank staff and the data access is limited (internal use only)
 
 ## ii. Data
 
@@ -20,7 +20,7 @@ The data is obtained mainly from the Country-Level Institutional Assessment and 
 
 -   Availability: World Bank Internal, based on public data.
 
--   Note: Raw. Data has not been modified.
+-   Note: Raw. This is a code book.
 
 -   Source: CLIAR Dashboard
 
@@ -126,7 +126,7 @@ The data is obtained mainly from the Country-Level Institutional Assessment and 
 
 -   Access year: October 2024
 
-**Filename : `boost\BOOST_country_data.xlsx`**
+**Filename : `boost\budget_priorities.xlsx`**
 
 -   Availability: Internal.
 
@@ -151,6 +151,7 @@ The data is obtained mainly from the Country-Level Institutional Assessment and 
 -   Access year: May 2025.
 
 **Filename : `wb/dgss.csv`.**
+
 -   Availability: Public.
 
 -   Note: Data has not been modified.
@@ -161,9 +162,5 @@ The data is obtained mainly from the Country-Level Institutional Assessment and 
 
 -   Access year: May 2025.
 
-## Annex
-
-## iii. List of Exhibits
 
 
-Under construction
