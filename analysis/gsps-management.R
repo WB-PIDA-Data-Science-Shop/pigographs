@@ -25,12 +25,11 @@ options(
   )
 )
 
+set.seed(8401)
+
 # read-in data ------------------------------------------------------------
 
-
 management_data <- gsps_management
-
-
 
 # analysis -------------------------------------------------------------
 # target setting
