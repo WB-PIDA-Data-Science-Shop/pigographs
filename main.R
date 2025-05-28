@@ -1,8 +1,11 @@
 # Main R Script
 
+# Set a seed for reproducibility
+set.seed(8401)
+
 # load libraries
 
-# run this only rhe first time you are running the code
+# run this only the first time you are running the code
 # renv::restore()
 
 library(here)
