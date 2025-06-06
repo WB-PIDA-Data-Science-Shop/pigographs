@@ -274,7 +274,7 @@ plot_budget_execution <- function(data,
     exyear2 <- exyear
   }
 
-  df <- data %>%
+  df <- data |>
     filter(
       year        == exyear2,
       sector      == govsector,
@@ -348,7 +348,7 @@ plot_cluster_appendix <- function(data, cluster_ctf, year_label) {
   }
 
   # subset to that cluster
-  cluster_data <- data %>%
+  cluster_data <- data |>
     filter(family_name == cluster_ctf)
 
   # one plot per var_name
@@ -356,12 +356,12 @@ plot_cluster_appendix <- function(data, cluster_ctf, year_label) {
 
   for (indicator in indicators) {
     # subset and reorder within each region
-    plot_data <- cluster_data %>%
-      filter(var_name == indicator) %>%
-      group_by(region) %>%
+    plot_data <- cluster_data |>
+      filter(var_name == indicator) |>
+      group_by(region) |>
       mutate(
         country_name = fct_reorder(country_name, ctf_distance, .desc = FALSE)
-      ) %>%
+      ) |>
       ungroup()
 
     # build the plot
@@ -416,5 +416,3 @@ plot_cluster_appendix <- function(data, cluster_ctf, year_label) {
     )
   }
 }
-
-

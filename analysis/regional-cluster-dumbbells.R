@@ -53,14 +53,12 @@ ggsave_db <- partial(
 
 options(ggrepel.max.overlaps = Inf)
 
-set.seed(101010)
-
 # data-load ---------------------------------------------------------------
 
 ctf_static_wide <- read_csv(
                   here("data-raw", "output", "ctf_static_wide.csv.gz"))
 
-
+devtools::use_data_raw("ctf_static_wide")
 # regional-visualizations -------------------------------------------------
 
 
