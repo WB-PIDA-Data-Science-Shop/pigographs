@@ -118,7 +118,8 @@ generate_group_minmax_plot <- function(data,
                         linetype = "solid",
                         color = "grey",
                         alpha = 0.5,
-                        linewidth = 4
+                        linewidth = 4,
+                        nudge_x = -0.3
     ) +
     ggrepel::geom_text_repel(
       data = filtered_data |> dplyr::filter(type == "Average"),
