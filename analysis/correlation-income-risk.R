@@ -73,13 +73,13 @@ run_ctf_plots <- function(country_df, ctf_vars, ctf_labels,
 
   # Merge in WDI + rename
   base <- country_df |>
-    select(country_code, all_of(ctf_vars), region) |>
-    left_join(wdi, by = c("country_code" = "Country Code")) |>
-    rename_with(~ ctf_labels[.x], all_of(ctf_vars))
+    dplyr::select(country_code, dplyr::all_of(ctf_vars), region) |>
+    dplyr::left_join(wdi, by = c("country_code" = "Country Code")) |>
+    dplyr::rename_with(~ ctf_labels[.x], dplyr::all_of(ctf_vars))
 
-  # If risk, join risk_data and set up single‐outcome list
+  # If risk: join risk_data and set up outcome_list
   if (outcome_type == "risk") {
-    base <- base |> left_join(risk_data, by = c("Country Name"="Country Name"))
+    base <- base |> dplyr::left_join(risk_data, by = c("Country Name"="Country Name"))
     outcome_list <- list(list(
       var       = "country_risk",
       y_label   = "Country Risk Index (2025)",
@@ -90,11 +90,14 @@ run_ctf_plots <- function(country_df, ctf_vars, ctf_labels,
       lab <- if (grepl("GDP per capita", v)) {
         "log(GDP per capita, PPP (constant 2021 international $))\n(circa 2022)"
       } else {
-        paste0(str_wrap(v, width = 40), "\n(circa 2022)")
+        paste0(stringr::str_wrap(v, width = 40), "\n(circa 2022)")
       }
-      list(var = v, y_label = lab, transform = function(x) {
-        if (grepl("GDP per capita", v)) log(x) else x
-      })
+
+      list(
+        var     = v,
+        y_label = lab,
+        transform = function(x) if (grepl("GDP per capita", v)) log(x) else x
+      )
     })
   }
 
@@ -104,117 +107,159 @@ run_ctf_plots <- function(country_df, ctf_vars, ctf_labels,
     country_ls <- list()
 
     for (cl in names(ctf_labels)) {
+
       disp <- ctf_labels[[cl]]
 
-      tmp  <- base |>
-        drop_na(all_of(c(disp, out$var))) |>
-        mutate(y_val = out$transform(.data[[out$var]]))
+      tmp <- base |>
+        tidyr::drop_na(dplyr::all_of(c(disp, out$var))) |>
+        dplyr::mutate(y_val = out$transform(.data[[out$var]]))
 
       country_ls[[disp]] <- sort(unique(tmp$country_code))
 
-      fit  <- lm(as.formula(sprintf("y_val ~ poly(`%s`,2)", disp)), data = tmp)
-      r2   <- summary(fit)$r.squared
-      r2l  <- sprintf("R² = %.3f", r2)
-      x0   <- min(tmp[[disp]], na.rm=TRUE)
-      y0   <- max(tmp$y_val, na.rm=TRUE)
+      # Fit quadratic regression
+      fit <- lm(as.formula(sprintf("y_val ~ poly(`%s`, 2)", disp)), data = tmp)
+      fit_s <- summary(fit)
+      coeffs <- coef(fit_s)
+
+      # Extract coefficients
+      b0 <- coeffs[1, 1]
+      b1 <- coeffs[2, 1]
+      b2 <- coeffs[3, 1]
+      pval_b1 <- coeffs[2, 4]
+      r2 <- fit_s$r.squared
+
+      # Significance stars
+      sig_star <- ifelse(pval_b1 < 0.001, "***",
+                         ifelse(pval_b1 < 0.01, "**",
+                                ifelse(pval_b1 < 0.05, "*",
+                                       ifelse(pval_b1 < 0.1, ".", ""))))
+
+      # Labels
+      eq_label <- sprintf("y = %.3f + %.3f·x + %.3f·x²", b0, b1, b2)
+      p_label  <- sprintf("p-value(slope) = %.2e%s", pval_b1, sig_star)
+      r2_label <- sprintf("R² = %.3f", r2)
+
+      reg_label <- paste(eq_label, p_label, r2_label, sep = "\n")
 
       # Add highlight flag
       tmp <- tmp |>
-        mutate(
-          highlight_flag = if_else(
+        dplyr::mutate(
+          highlight_flag = dplyr::if_else(
             country_code == highlight_country,
             highlight_country,
             "Other"
           )
         )
 
-      # PLOT WITH HIGHLIGHT LOGIC
+      # Determine top-left annotation placement
+      x0 <- min(tmp[[disp]], na.rm = TRUE)
+      y0 <- max(tmp$y_val, na.rm = TRUE)
+
+
+      # Build plot
       p <-
-        ggplot(tmp, aes(x = .data[[disp]],
-                        y = y_val,
-                        color = highlight_flag)) +
-        geom_point(size = 2) +
-        # *** ADD LABEL FOR HIGHLIGHTED COUNTRY ***
-        geom_text(
+        ggplot2::ggplot(tmp, ggplot2::aes(
+          x = .data[[disp]],
+          y = y_val,
+          color = highlight_flag
+        )) +
+        ggplot2::geom_point(size = 2) +
+        ggplot2::geom_text(
           data = subset(tmp, highlight_flag == highlight_country),
-          aes(label = country_code),
+          ggplot2::aes(label = country_code),
           vjust = -0.7,
           size = 3.5,
           color = "steelblue",
           fontface = "bold"
         ) +
-        geom_smooth(
-          method  = "lm",
-          formula = y ~ poly(x,2),
-          se      = FALSE,
-          color   = "black",
-          linetype= "dashed"
+        ggplot2::geom_smooth(
+          method = "lm",
+          formula = y ~ poly(x, 2),
+          se = FALSE,
+          color = "black",
+          linetype = "dashed"
         ) +
-        annotate("text", x = x0, y = y0, label = r2l,
-                 hjust = 0, vjust = 1, size = 4) +
-        labs(
-          x = paste0(disp, " (2019-2023)"),
+        ggplot2::annotate(
+          "label",
+          x = x0,
+          y = 135,
+          label = reg_label,
+          hjust = 0,
+          vjust = 1,
+          size = 3.8,
+          fill = "white",
+          alpha = 0.9,
+          label.size = 0.3
+        ) +
+        ylim(c(0, 140)) +
+        ggplot2::labs(
+          x = paste0(disp, " (2019–2023)"),
           color = NULL
         ) +
-        scale_color_manual(
+        ggplot2::scale_color_manual(
           values = c(
             setNames("steelblue", highlight_country),
             Other = "gray80"
           ),
           guide = "none"
         ) +
-        scale_size_manual(values =)
-        theme_bw(base_size = 14) +
-        theme(
-          axis.title.y    = element_blank(),
-          axis.title      = element_text(size=16),
+        ggplot2::theme_bw(base_size = 14) +
+        ggplot2::theme(
+          axis.title.y    = ggplot2::element_blank(),
+          axis.title      = ggplot2::element_text(size = 16),
           legend.position = "bottom",
-          legend.title    = element_text(face="bold", size=14),
-          legend.text     = element_text(size=12),
-          panel.border    = element_rect(color="black", fill=NA)
+          legend.title    = ggplot2::element_text(face = "bold", size = 14),
+          legend.text     = ggplot2::element_text(size = 12),
+          panel.border    = ggplot2::element_rect(color = "black", fill = NA)
         )
 
       plots[[disp]] <- p
     }
 
-    # Suppress y‐axis on every 2nd plot
+    # Remove y-axis from every 2nd plot
     plots_shared <- lapply(seq_along(plots), function(i) {
       if (i %% 2 == 0)
-        plots[[i]] + theme(axis.text.y = element_blank(),
-                           axis.ticks.y = element_blank())
+        plots[[i]] +
+        ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                       axis.ticks.y = ggplot2::element_blank())
       else
         plots[[i]]
     })
 
-    # 2‐column grid + shared legend
-    combined <- wrap_plots(plots_shared, ncol=2) +
-      plot_layout(guides="collect") &
-      theme(legend.position="bottom", legend.box="horizontal")
+    # Combined layout
+    combined <- patchwork::wrap_plots(plots_shared, ncol = 2) +
+      patchwork::plot_layout(guides = "collect") &
+      ggplot2::theme(legend.position = "bottom", legend.box = "horizontal")
 
-    shared_y   <- textGrob(out$y_label, rot=90,
-                           gp=gpar(fontsize=16, fontface="bold"))
-    final_plot <- wrap_elements(shared_y) + combined +
-      plot_layout(widths=c(0.1,1))
+    shared_y <- grid::textGrob(out$y_label, rot = 90,
+                               gp = grid::gpar(fontsize = 16, fontface = "bold"))
+
+    final_plot <- patchwork::wrap_elements(shared_y) + combined +
+      patchwork::plot_layout(widths = c(0.1, 1))
 
     # Filenames
-    fn_base <- if (outcome_type=="risk") "CountryRisk_vs_CTF"
+    fn_base <- if (outcome_type == "risk") "CountryRisk_vs_CTF"
     else gsub("[^A-Za-z0-9]", "", out$var)
+
     file_png <- paste0(fn_base, "_", suffix, ".png")
-    file_csv <- paste0(if (outcome_type=="risk") "CountryLists_CountryRisk_"
-                       else "CountryLists_", fn_base, "_",
-                       suffix, ".csv")
+    file_csv <- paste0(
+      if (outcome_type == "risk") "CountryLists_CountryRisk_" else "CountryLists_",
+      fn_base, "_",
+      suffix,
+      ".csv"
+    )
 
     ggsave(file.path(output_dir, file_png),
            final_plot,
            width  = 12,
-           height = if (length(ctf_labels)>4) 12 else 8,
+           height = if (length(ctf_labels) > 4) 12 else 8,
            dpi    = 300,
            bg     = "white")
 
     # Export country lists
     max_l <- max(sapply(country_ls, length))
-    padded <- lapply(country_ls, function(v){ length(v)<-max_l; v })
-    dfc <- as.data.frame(padded, stringsAsFactors=FALSE)
+    padded <- lapply(country_ls, function(v){ length(v) <- max_l; v })
+    dfc <- as.data.frame(padded, stringsAsFactors = FALSE)
   }
 }
 
@@ -223,31 +268,32 @@ run_ctf_plots2 <- function(country_df, ctf_vars, ctf_labels,
                            outcome_type = c("wdi","risk"),
                            suffix,
                            highlight_country = "KEN") {
+
   outcome_type <- match.arg(outcome_type)
 
   # -----------------------------
   # Automatically detect numeric WDI variables
   # -----------------------------
   wdi_numeric_vars <- wdi |>
-    select(-`Country Name`, -`Country Code`) |>
-    select(where(is.numeric)) |>
+    dplyr::select(-`Country Name`, -`Country Code`) |>
+    dplyr::select(where(is.numeric)) |>
     names()
 
   # -----------------------------
   # Merge in WDI + rename CTF vars
   # -----------------------------
   base <- country_df |>
-    select(country_code, all_of(ctf_vars), CountryName = country_name) |>
-    left_join(wdi, by = c("country_code" = "Country Code")) |>
-    rename_with(~ ctf_labels[.x], all_of(ctf_vars))
+    dplyr::select(country_code, all_of(ctf_vars), CountryName = country_name) |>
+    dplyr::left_join(wdi, by = c("country_code" = "Country Code")) |>
+    dplyr::rename_with(~ ctf_labels[.x], all_of(ctf_vars))
 
   # -----------------------------
-  # Risk mode
+  # Outcome list
   # -----------------------------
   if (outcome_type == "risk") {
 
     base <- base |>
-      left_join(risk_data, by = c("CountryName"="Country Name"))
+      dplyr::left_join(risk_data, by = c("CountryName"="Country Name"))
 
     outcome_list <- list(list(
       var       = "country_risk",
@@ -257,20 +303,17 @@ run_ctf_plots2 <- function(country_df, ctf_vars, ctf_labels,
 
   } else {
 
-    # WDI mode — numeric variables
+    # WDI numeric outcomes
     outcome_list <- lapply(wdi_numeric_vars, function(v) {
 
       lab <- dplyr::case_when(
         grepl("gdp.per.capita", v, ignore.case = TRUE) ~
           "log(GDP per capita, PPP (constant 2021 international $))\n(circa 2022)",
-
         grepl("fdi", v, ignore.case = TRUE) & grepl("gdp", v, ignore.case = TRUE) ~
           "FDI Net Inflows as Share of GDP (2019–2023)",
-
         grepl("nbf", v, ignore.case = TRUE) | grepl("newbiz", v, ignore.case = TRUE) ~
           "New Businesses Registered per 1000 People (2019–2023)",
-
-        TRUE ~ paste0(str_wrap(v, width = 40), "\n(circa 2022)")
+        TRUE ~ paste0(stringr::str_wrap(v, width = 40), "\n(circa 2022)")
       )
 
       transform_fn <- function(x) {
@@ -294,93 +337,114 @@ run_ctf_plots2 <- function(country_df, ctf_vars, ctf_labels,
       disp <- ctf_labels[[cl]]
 
       tmp <- base |>
-        drop_na(all_of(c(disp, out$var))) |>
-        mutate(
+        tidyr::drop_na(dplyr::all_of(c(disp, out$var))) |>
+        dplyr::mutate(
           y_val = out$transform(.data[[out$var]]),
           highlight_flag = ifelse(country_code == highlight_country, highlight_country, "Other")
         )
 
+      # Optional filtering for extreme FDI/rent values
       if ("fdishare_gdp" %in% names(tmp)) {
-        Q1 <- quantile(tmp$fdishare_gdp, 0.25, na.rm = TRUE)
-        Q3 <- quantile(tmp$fdishare_gdp, 0.75, na.rm = TRUE)
-        IQR_val <- Q3 - Q1
-        upper_fence <- Q3 + 1.5 * IQR_val
-        tmp <- tmp %>% filter(fdishare_gdp <= upper_fence | is.na(fdishare_gdp))
+        tmp <- tmp |>
+          dplyr::filter(fdishare_gdp >= 0 & fdishare_gdp <= 50 & rrentshare_gdp <= 20)
       }
 
       country_ls[[disp]] <- sort(unique(tmp$country_code))
 
-      # Fit quadratic model
-      fit <- lm(as.formula(sprintf("y_val ~ poly(`%s`,2)", disp)), data = tmp)
-      r2  <- summary(fit)$r.squared
-      r2l <- sprintf("R² = %.3f", r2)
+      # -----------------------------
+      # Fit quadratic model (raw polynomial for readable coefficients)
+      # -----------------------------
+      fit <- lm(as.formula(sprintf("y_val ~ poly(`%s`, 2, raw = TRUE)", disp)), data = tmp)
+      fit_s <- summary(fit)
+      coeffs <- coef(fit_s)
 
+      b0 <- coeffs[1,1]
+      b1 <- coeffs[2,1]
+      b2 <- coeffs[3,1]
+      pval_b1 <- coeffs[2,4]
+      r2 <- fit_s$r.squared
+
+      # Significance stars
+      sig_star <- ifelse(pval_b1 < 0.001, "***",
+                         ifelse(pval_b1 < 0.01, "**",
+                                ifelse(pval_b1 < 0.05, "*",
+                                       ifelse(pval_b1 < 0.1, ".", ""))))
+
+      reg_label <- sprintf(
+        "y = %.3f + %.3f·x + %.3f·x²\np-value(slope) = %.2e%s\nR² = %.3f",
+        b0, b1, b2, pval_b1, sig_star, r2
+      )
+
+      # -----------------------------
+      # Determine annotation coordinates
+      # -----------------------------
       x0 <- min(tmp[[disp]], na.rm=TRUE)
-      y0 <- max(tmp$y_val, na.rm=TRUE)
+      y_range <- range(tmp$y_val, na.rm=TRUE)
+      y_max <- y_range[2] + 0.15 * diff(y_range)  # expand y-axis by 15% to fit label
 
       # -----------------------------
-      # Plot: highlighted country + gray others
+      # Build plot
       # -----------------------------
-      p <- ggplot(tmp, aes(x = .data[[disp]], y = y_val, color = highlight_flag)) +
-        geom_point(size = 2) +
-        scale_color_manual(
-          values = c(setNames("steelblue", highlight_country), Other = "gray80"),
-          guide = "none"
-        ) +
-        geom_smooth(
-          method  = "lm",
-          formula = y ~ poly(x,2),
-          se      = FALSE,
-          color   = "black",
-          linetype = "dashed"
-        ) +
-        annotate("text", x = x0, y = y0, label = r2l,
-                 hjust=0, vjust=1, size=4) +
-        labs(x = paste0(disp, " (2019–2023)")) +
-        theme_bw(base_size = 14) +
-        theme(
-          axis.title.y    = element_blank(),
-          axis.title      = element_text(size=16),
+      p <- ggplot2::ggplot(tmp, ggplot2::aes(x = .data[[disp]], y = y_val, color = highlight_flag)) +
+        ggplot2::geom_point(size = 2) +
+        ggplot2::scale_color_manual(values = c(setNames("steelblue", highlight_country), Other = "gray80"),
+                                    guide = "none") +
+        ggplot2::geom_smooth(method = "lm", formula = y ~ poly(x,2,raw=TRUE),
+                             se = FALSE, color = "black", linetype="dashed") +
+        ggplot2::annotate("label", x = x0, y = y_max,
+                          label = reg_label, hjust=0, vjust=1,
+                          size = 3.8, fill="white", alpha=0.9, label.size = 0.3) +
+        ggplot2::labs(x = paste0(disp, " (2019–2023)")) +
+        ggplot2::expand_limits(y = y_max) +
+        ggplot2::theme_bw(base_size = 14) +
+        ggplot2::theme(
+          axis.title.y    = ggplot2::element_blank(),
+          axis.title      = ggplot2::element_text(size=16),
           legend.position = "none",
-          panel.border    = element_rect(color="black", fill=NA),
-          panel.grid      = element_line(color="grey85")
+          panel.border    = ggplot2::element_rect(color="black", fill=NA),
+          panel.grid      = ggplot2::element_line(color="grey85")
         )
 
-      # Label highlighted country
-      tmp_h <- tmp |> filter(country_code == highlight_country)
+      # Highlight country label
+      tmp_h <- tmp |> dplyr::filter(country_code == highlight_country)
       if (nrow(tmp_h) > 0) {
         p <- p +
-          geom_text(
-            data = tmp_h,
-            aes(label = CountryName),
-            nudge_y = 0.02 * diff(range(tmp$y_val)),
-            size = 4
-          )
+          ggplot2::geom_text(data = tmp_h,
+                             ggplot2::aes(label = CountryName),
+                             nudge_y = 0.02 * diff(y_range),
+                             size = 4, fontface="bold", color="steelblue")
       }
 
       plots[[disp]] <- p
     }
 
-    # Suppress y-axis on every 2nd plot
+    # -----------------------------
+    # Remove y-axis from every 2nd plot
+    # -----------------------------
     plots_shared <- lapply(seq_along(plots), function(i) {
       if (i %% 2 == 0)
         plots[[i]] +
-        theme(axis.text.y = element_blank(),
-              axis.ticks.y = element_blank())
+        ggplot2::theme(axis.text.y = ggplot2::element_blank(),
+                       axis.ticks.y = ggplot2::element_blank())
       else
         plots[[i]]
     })
 
-    combined <- wrap_plots(plots_shared, ncol=2) +
-      plot_layout(guides="collect")
+    # -----------------------------
+    # Combine with shared y-axis
+    # -----------------------------
+    combined <- patchwork::wrap_plots(plots_shared, ncol=2) +
+      patchwork::plot_layout(guides="collect")
 
-    shared_y <- textGrob(out$y_label, rot=90,
-                         gp=gpar(fontsize=16, fontface="bold"))
+    shared_y <- grid::textGrob(out$y_label, rot=90,
+                               gp=grid::gpar(fontsize=16, fontface="bold"))
 
-    final_plot <- wrap_elements(shared_y) + combined +
-      plot_layout(widths=c(0.1,1))
+    final_plot <- patchwork::wrap_elements(shared_y) + combined +
+      patchwork::plot_layout(widths=c(0.1,1))
 
-    # File naming
+    # -----------------------------
+    # Save PNG
+    # -----------------------------
     fn_base <- if (outcome_type=="risk") "CountryRisk_vs_CTF"
     else gsub("[^A-Za-z0-9]", "", out$var)
 
@@ -389,17 +453,19 @@ run_ctf_plots2 <- function(country_df, ctf_vars, ctf_labels,
     ggsave(file.path(output_dir, file_png),
            final_plot,
            width  = 12,
-           height = if (length(ctf_labels)>4) 12 else 8,
+           height = if(length(ctf_labels) > 4) 12 else 8,
            dpi    = 300,
            bg     = "white")
 
-    # Country list CSV
+    # -----------------------------
+    # Export country lists
+    # -----------------------------
     max_l <- max(sapply(country_ls, length))
-    padded <- lapply(country_ls, function(v){ length(v)<-max_l; v })
+    padded <- lapply(country_ls, function(v){ length(v) <- max_l; v })
     dfc <- as.data.frame(padded, stringsAsFactors = FALSE)
+
   }
 }
-
 
 
 
@@ -498,7 +564,7 @@ rrent_dt <-
 wdi <- wdi |> full_join(rrent_dt, by = c("Country Code" = "country_code"))
 
 
-wdi <- wdi |> dplyr::filter(rrentshare_gdp <= 20)
+# wdi <- wdi |> dplyr::filter(rrentshare_gdp <= 20)
 
 run_ctf_plots2(country_df = ctf_country,
               ctf_vars = corruption_list,
