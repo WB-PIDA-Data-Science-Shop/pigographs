@@ -411,7 +411,7 @@ plot_cluster_appendix <- function(data, cluster_ctf, year_label) {
       plot     = p,
       bg       = "white",
       width    = 20,
-      height   = 16,
+      height   = 20,
       dpi      = 300
     )
   }
